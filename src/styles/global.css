@@ -339,7 +339,11 @@ main, header, footer {
   padding: 40px;
 }
 .curtain-content__inner {
-  max-width: 640px;
+  max-width: 780px;
+  width: 100%;
+  text-align: left;
+}
+.curtain-content__inner h3 {
   text-align: center;
 }
 
