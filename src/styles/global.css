@@ -292,34 +292,74 @@ main, header, footer {
     );
 }
 
-/* ─── Broken Card (What's Broken section) ─── */
-.broken-card {
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.3s ease,
-              border-color 0.3s ease;
-  cursor: default;
-  overflow: hidden;
+/* ─── Curtain Reveal (What's Broken section) ─── */
+.curtain-section {
+  position: relative;
+  height: 200vh;
 }
-.broken-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(212, 146, 10, 0.4);
-  box-shadow:
-    0 14px 48px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(212, 146, 10, 0.1),
-    0 0 32px rgba(212, 146, 10, 0.12),
-    0 0 64px rgba(212, 146, 10, 0.06);
+.curtain-sticky {
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.curtain-half {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  background: var(--color-void);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+}
+.curtain-left {
+  left: 0;
+  justify-content: flex-end;
+  padding-right: 40px;
+  border-right: 1px solid var(--color-border);
+}
+.curtain-right {
+  right: 0;
+  justify-content: flex-start;
+  padding-left: 40px;
+  border-left: 1px solid var(--color-border);
+}
+.curtain-content {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #141018, #0d0a10);
+  padding: 40px;
+}
+.curtain-content__inner {
+  max-width: 640px;
+  text-align: center;
 }
 
-/* Amber solution border (left edge, draws in via GSAP) */
-.broken-card__border {
+/* Divider between curtain sections */
+.curtain-section + .curtain-section::before {
+  content: '';
   position: absolute;
-  left: 0;
   top: 0;
-  width: 2px;
-  height: 100%;
-  background: linear-gradient(180deg, #A67208, #D4920A, #E5A100);
-  transform: scaleY(0);
-  transform-origin: top;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(80%, 900px);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-border), transparent);
+}
+
+@media (max-width: 768px) {
+  .curtain-section { height: 180vh; }
+  .curtain-left { padding-right: 20px; }
+  .curtain-right { padding-left: 20px; }
+  .curtain-content { padding: 24px; }
 }
 
 /* ─── Step card hover ─── */

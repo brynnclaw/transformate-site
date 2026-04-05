@@ -1,30 +1,40 @@
 ---
 const cards = [
   {
+    curtainLeft: 'TRAPPED',
+    curtainRight: 'KNOWLEDGE',
     title: 'The process that lives in someone\'s head',
     before: 'Your best person is also your biggest risk. When they\'re sick, nothing moves. When they leave, the process leaves with them. Everything they know — the exceptions, the workarounds, the "you just have to know" steps — is trapped in their head.',
     after: 'We extract that knowledge, structure it, and build a system that runs whether they\'re in the room or not. Their expertise becomes permanent. Your operations stop depending on any single person.',
     example: 'A logistics company\'s customs clearance relied entirely on one specialist. When she went on leave, shipments sat for days.',
   },
   {
+    curtainLeft: '5-DAY',
+    curtainRight: 'ONBOARDING',
     title: 'The 5-day onboarding that should take 5 hours',
     before: 'New clients wait days to get started because setup involves 12 steps across 4 systems, 3 people, and 2 approval chains. Everyone touches it. Nobody owns it. Meanwhile, your client\'s first impression of working with you is: waiting.',
     after: 'We map every step, remove the ones that don\'t need a human, and build a system that takes clients from signed contract to live in hours. Your team only touches the exceptions.',
     example: 'A SaaS company\'s onboarding took 8 business days across sales, ops, and CS teams. After: same day.',
   },
   {
+    curtainLeft: 'MONDAY',
+    curtainRight: 'SCRAMBLE',
     title: 'The Monday morning scramble',
     before: 'Every week starts with someone manually pulling numbers from five different systems to build a report that should have been ready before they walked in. By the time it\'s done, the morning is gone. The data is already stale.',
     after: 'We build the system that assembles the report overnight. It lands in your inbox at 6am Monday — accurate, formatted, ready to act on. Nobody built it. It built itself.',
     example: 'An operations director spent every Monday pulling data from CRM, ERP, and spreadsheets. Three hours of copy-paste before she could start her actual job.',
   },
   {
+    curtainLeft: 'HIDDEN',
+    curtainRight: 'ERRORS',
     title: 'The errors nobody catches until it\'s too late',
     before: 'Manual data entry means mistakes. Mistakes mean rework, refunds, angry clients, and lost trust. You only find the errors when someone complains — or worse, when it costs you money. The problem isn\'t your people. It\'s that you\'re asking humans to do work that humans are bad at.',
     after: 'We build systems that validate data at the point of entry, flag exceptions before they become problems, and drop error rates from percentages to near-zero.',
     example: 'An insurance broker\'s transposed digit in a coverage amount led to a R200,000 claim shortfall — discovered only when the client needed to claim.',
   },
   {
+    curtainLeft: 'CAN\'T',
+    curtainRight: 'SCALE',
     title: 'The business that can\'t run without you',
     before: 'You\'re the approval bottleneck, the quality checker, the exception handler, and the escalation point. You built the business — now you can\'t leave it. That\'s not a business. That\'s a job with extra steps and worse hours.',
     after: 'We build systems that handle the routine so you only touch what actually needs you. You approve strategy, not invoices. You handle exceptions, not email. You\'re the owner again, not the operator.',
@@ -44,59 +54,58 @@ const cards = [
     <h2 class="font-serif font-normal text-primary-text leading-tight mb-4 reveal" style="font-size:clamp(32px,3.5vw,45px);">
       Sound familiar?
     </h2>
-    <p class="font-sans text-secondary-text text-[18px] leading-relaxed mb-16 max-w-[640px] reveal">
+    <p class="font-sans text-secondary-text text-[18px] leading-relaxed mb-8 max-w-[640px] reveal">
       These are the problems we fix. If you recognise even one, we should talk.
     </p>
+  </div>
+</section>
 
-    <!-- Pain Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-      {cards.map((card, i) => (
-        <div
-          class:list={[
-            'broken-card relative border border-border rounded-[16px] p-8',
-            i === cards.length - 1 && cards.length % 2 !== 0 ? 'md:col-span-2 md:max-w-[calc(50%-12px)]' : '',
-          ]}
-          style="background:var(--color-surface);"
-          data-broken-index={i}
-        >
-          <!-- Rotating glow border (same as service cards) -->
-          <div class="service-glow" aria-hidden="true"><div class="glow-ring"></div></div>
-
-          <!-- Amber solution border (draws in via GSAP) -->
-          <div class="broken-card__border" aria-hidden="true"></div>
-
-          <!-- Title -->
-          <h3 class="font-serif font-normal text-primary-text text-[22px] leading-tight mb-5">
+<!-- Curtain Reveal Cards -->
+{cards.map((card, i) => (
+  <section class="curtain-section" data-curtain-index={i}>
+    <div class="curtain-sticky">
+      <!-- Revealed content (behind the curtains) -->
+      <div class="curtain-content">
+        <div class="curtain-content__inner">
+          <h3 class="font-serif font-normal text-primary-text leading-tight mb-6" style="font-size:clamp(28px,4vw,42px);">
             {card.title}
           </h3>
-
-          <!-- Problem (slate) -->
-          <p class="broken-card__problem font-sans text-[16px] text-slate leading-relaxed mb-4">
+          <p class="font-sans text-[16px] text-slate leading-relaxed mb-5 max-w-[560px]">
             {card.before}
           </p>
-
-          <!-- Solution (amber) -->
-          <p class="broken-card__solution font-sans text-[16px] text-forge-amber leading-relaxed mb-5" style="opacity:0;">
+          <p class="font-sans text-[16px] text-forge-amber leading-relaxed mb-5 max-w-[560px]">
             {card.after}
           </p>
-
-          <!-- Example -->
-          <p class="broken-card__example font-mono text-[13px] text-tertiary leading-relaxed italic" style="opacity:0;">
+          <p class="font-mono text-[13px] text-tertiary leading-relaxed italic max-w-[560px]">
             {card.example}
           </p>
         </div>
-      ))}
+      </div>
+
+      <!-- Left curtain -->
+      <div class="curtain-half curtain-left" data-curtain-side="left">
+        <h2 class="font-serif font-normal text-primary-text" style="font-size:clamp(36px,7vw,80px);letter-spacing:-0.04em;line-height:0.95;">
+          {card.curtainLeft}
+        </h2>
+      </div>
+
+      <!-- Right curtain -->
+      <div class="curtain-half curtain-right" data-curtain-side="right">
+        <h2 class="font-serif font-normal text-forge-amber" style="font-size:clamp(36px,7vw,80px);letter-spacing:-0.04em;line-height:0.95;">
+          {card.curtainRight}
+        </h2>
+      </div>
     </div>
+  </section>
+))}
 
-    <!-- Section CTA -->
-    <p class="font-sans text-[18px] text-center reveal">
-      <span class="text-secondary-text">See your problem here?</span>
-      <a href="#cta" class="text-forge-amber no-underline hover:text-bright-amber transition-colors duration-200 ml-1">
-        Book a call and we'll tell you exactly how we'd fix it →
-      </a>
-    </p>
-  </div>
-
-  <!-- Momentum Line -->
+<!-- Section CTA (after all curtains) -->
+<section class="relative py-16 px-6">
+  <p class="font-sans text-[18px] text-center reveal">
+    <span class="text-secondary-text">See your problem here?</span>
+    <a href="#cta" class="text-forge-amber no-underline hover:text-bright-amber transition-colors duration-200 ml-1">
+      Book a call and we'll tell you exactly how we'd fix it →
+    </a>
+  </p>
   <div class="momentum-line"></div>
 </section>
