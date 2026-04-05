@@ -333,13 +333,13 @@ main, header, footer {
   inset: 0;
   z-index: 1;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   background: linear-gradient(135deg, #141018, #0d0a10);
-  padding: 40px;
+  padding: 18vh 40px 40px;
 }
 .curtain-content__inner {
-  max-width: 780px;
+  max-width: 860px;
   width: 100%;
   text-align: left;
 }
@@ -363,7 +363,7 @@ main, header, footer {
   .curtain-section { height: 180vh; }
   .curtain-left { padding-right: 20px; }
   .curtain-right { padding-left: 20px; }
-  .curtain-content { padding: 24px; }
+  .curtain-content { padding: 14vh 24px 24px; }
 }
 
 /* ─── Step card hover ─── */
