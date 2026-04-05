@@ -1,0 +1,60 @@
+---
+interface Props {
+  text: string;
+  href: string;
+  variant?: 'primary' | 'secondary';
+  compact?: boolean;
+  class?: string;
+  id?: string;
+}
+
+const { text, href, variant = 'primary', compact = false, class: className = '', id } = Astro.props;
+const uid = Math.random().toString(36).slice(2, 8);
+const isPrimary = variant === 'primary';
+
+const fillStops = isPrimary
+  ? [
+      { offset: '0', color: '#E5A100', opacity: '0.85' },
+      { offset: '0.35', color: '#D4920A', opacity: '0.4' },
+      { offset: '1', color: '#A67208', opacity: '0' },
+    ]
+  : [
+      { offset: '0', color: '#D4920A', opacity: '0.08' },
+      { offset: '0.4', color: '#D4920A', opacity: '0.03' },
+      { offset: '1', color: '#D4920A', opacity: '0' },
+    ];
+
+const strokeColor = isPrimary ? '#D4920A' : 'rgba(212,146,10,0.35)';
+---
+
+<a
+  href={href}
+  class:list={['hud-btn', `hud-btn--${variant}`, compact && 'hud-btn--compact', className]}
+  {...(id ? { id } : {})}
+  data-hud-text={text}
+>
+  <svg class="hud-btn__svg" viewBox="0 0 200 52" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id={`hg${uid}`} x1="0.5" y1="-0.5" x2="0.5" y2="1.5" gradientUnits="objectBoundingBox">
+        {fillStops.map((s) => (
+          <stop offset={s.offset} stop-color={s.color} stop-opacity={s.opacity} />
+        ))}
+      </linearGradient>
+    </defs>
+    <path
+      class="hud-btn__fill"
+      d="M5.5 6.5L11 1H189L194.5 6.5V45.5L189 51H11L5.5 45.5V6.5Z"
+      fill={`url(#hg${uid})`}
+    />
+    <path
+      class="hud-btn__stroke"
+      d="M5.5 6.5L11 1H189L194.5 6.5V45.5L189 51H11L5.5 45.5V6.5Z"
+      fill="none"
+      stroke={strokeColor}
+      stroke-width="1"
+      vector-effect="non-scaling-stroke"
+    />
+  </svg>
+  {isPrimary && <div class="hud-btn__shimmer" aria-hidden="true"></div>}
+  <span class="hud-btn__label">{text}</span>
+</a>

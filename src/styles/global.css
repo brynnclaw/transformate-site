@@ -1,0 +1,432 @@
+@import "tailwindcss";
+
+/* ─── Amber Forge Design Tokens ─── */
+@theme {
+  --color-forge-amber: #D4920A;
+  --color-bright-amber: #E5A100;
+  --color-deep-amber: #A67208;
+  --color-warm-ivory: #F0E4D0;
+  --color-void: #0A0A10;
+  --color-surface: #1A1A22;
+  --color-surface-2: #22222E;
+  --color-border: #2E2E3A;
+  --color-primary-text: #E4E4ED;
+  --color-secondary-text: #8888A0;
+  --color-tertiary: #555566;
+
+  --font-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+/* Fonts loaded via Google Fonts <link> in Layout.astro */
+
+/* ─── Base ─── */
+html {
+  background-color: var(--color-void);
+  color: var(--color-primary-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+}
+
+::selection {
+  background-color: rgba(212, 146, 10, 0.3);
+  color: var(--color-primary-text);
+}
+
+/* ─── Momentum Line (reusable) ─── */
+.momentum-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, #A67208, #D4920A, #E5A100);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+/* ─── Dotted Separator ─── */
+.dotted-separator {
+  width: 100%;
+  height: 1px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--color-border) 0px,
+    var(--color-border) 2px,
+    transparent 2px,
+    transparent 6px
+  );
+}
+
+/* ─── HUD Button ─── */
+.hud-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+  padding: 0 2.5rem;
+  min-width: 160px;
+  cursor: pointer;
+  text-decoration: none;
+  overflow: hidden;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.25s ease;
+}
+.hud-btn--compact {
+  height: 44px;
+  padding: 0 1.8rem;
+  min-width: 140px;
+}
+.hud-btn:hover {
+  transform: scale(1.03) translateY(-2px);
+}
+.hud-btn:active {
+  transform: scale(0.97);
+  transition-duration: 0.1s;
+}
+
+.hud-btn__svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.hud-btn__label {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.hud-btn--compact .hud-btn__label {
+  font-size: 13px;
+}
+
+/* Primary variant */
+.hud-btn--primary .hud-btn__label {
+  color: var(--color-primary-text);
+}
+.hud-btn--primary:hover {
+  filter: drop-shadow(0 0 20px rgba(212, 146, 10, 0.35));
+}
+
+/* Secondary variant */
+.hud-btn--secondary .hud-btn__label {
+  color: var(--color-secondary-text);
+  transition: color 0.2s;
+}
+.hud-btn--secondary:hover .hud-btn__label {
+  color: var(--color-primary-text);
+}
+.hud-btn--secondary:hover {
+  filter: drop-shadow(0 0 12px rgba(212, 146, 10, 0.15));
+}
+
+/* Corner dots (top-right 2×2 grid via box-shadow) */
+.hud-btn::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  right: 9px;
+  width: 2.2px;
+  height: 2.2px;
+  border-radius: 50%;
+  z-index: 2;
+}
+.hud-btn--primary::before {
+  background: #E5A100;
+  box-shadow:
+    0 4.5px 0 #E5A100,
+    -4.5px 0 0 #E5A100,
+    -4.5px 4.5px 0 #E5A100;
+}
+.hud-btn--secondary::before {
+  background: #A67208;
+  box-shadow:
+    0 4.5px 0 #A67208,
+    -4.5px 0 0 #A67208,
+    -4.5px 4.5px 0 #A67208;
+}
+
+/* Side dots (left, 2 vertical via box-shadow) */
+.hud-btn::after {
+  content: '';
+  position: absolute;
+  left: 1px;
+  top: calc(50% - 3px);
+  width: 1.2px;
+  height: 1.2px;
+  border-radius: 50%;
+  z-index: 2;
+}
+.hud-btn--primary::after {
+  background: #E5A100;
+  box-shadow: 0 5px 0 #E5A100;
+}
+.hud-btn--secondary::after {
+  background: #A67208;
+  box-shadow: 0 5px 0 #A67208;
+}
+
+/* Shimmer sweep (primary only) */
+.hud-btn__shimmer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+  transform: translateX(-100%);
+  animation: hud-shimmer 5s ease-in-out infinite 3s;
+  pointer-events: none;
+  z-index: 1;
+  will-change: transform;
+}
+@keyframes hud-shimmer {
+  0% { transform: translateX(-100%); opacity: 0; }
+  5% { opacity: 1; }
+  30% { transform: translateX(350%); opacity: 0; }
+  100% { transform: translateX(-100%); opacity: 0; }
+}
+
+/* ─── Scroll hidden by default for animation ─── */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+/* ─── Content stacking above particle canvas ─── */
+main, header, footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── Service card hover (lift + amber glow) ─── */
+.service-card {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.3s ease,
+              border-color 0.3s ease;
+  cursor: default;
+}
+.service-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(212, 146, 10, 0.4);
+  box-shadow:
+    0 14px 48px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(212, 146, 10, 0.1),
+    0 0 32px rgba(212, 146, 10, 0.12),
+    0 0 64px rgba(212, 146, 10, 0.06);
+}
+
+/* ─── Rotating Glow Border (cursor-following conic gradient) ─── */
+.service-glow {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  --spread: 40;
+  --start: 0;
+  --active: 0;
+}
+.glow-ring {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+}
+.glow-ring::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  border: 3px solid transparent;
+  background:
+    radial-gradient(circle at 30% 30%, #E5A100 8%, transparent 20%),
+    radial-gradient(circle at 70% 70%, #D4920A 12%, transparent 25%),
+    radial-gradient(circle at 50% 50%, #FFBE2E 6%, transparent 16%),
+    repeating-conic-gradient(
+      from 236.84deg at 50% 50%,
+      #FFBE2E 0%,
+      #E5A100 5%,
+      #D4920A 10%,
+      #A67208 15%,
+      #E5A100 20%
+    );
+  background-attachment: fixed;
+  opacity: var(--active);
+  transition: opacity 0.3s;
+  filter: brightness(1.3);
+  -webkit-mask-clip: padding-box, border-box;
+  -webkit-mask-composite: source-in;
+  mask-clip: padding-box, border-box;
+  mask-composite: intersect;
+  -webkit-mask-image:
+    linear-gradient(#0000, #0000),
+    conic-gradient(
+      from calc((var(--start) - var(--spread)) * 1deg),
+      #00000000 0deg,
+      #fff,
+      #00000000 calc(var(--spread) * 2deg)
+    );
+  mask-image:
+    linear-gradient(#0000, #0000),
+    conic-gradient(
+      from calc((var(--start) - var(--spread)) * 1deg),
+      #00000000 0deg,
+      #fff,
+      #00000000 calc(var(--spread) * 2deg)
+    );
+}
+
+/* ─── Step card hover ─── */
+.step-card {
+  transition: transform 300ms ease;
+}
+.step-card:hover {
+  transform: translateY(-4px) !important;
+}
+
+/* ─── FAQ item hover ─── */
+.faq-item {
+  transition: border-color 200ms ease;
+}
+
+/* ─── Odometer Counter ─── */
+.odometer {
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 1.15;
+}
+.odo-digit {
+  display: inline-block;
+  overflow: hidden;
+  height: 1.15em;
+  position: relative;
+}
+.odo-strip {
+  display: flex;
+  flex-direction: column;
+  transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.odo-strip span {
+  display: block;
+  height: 1.15em;
+  line-height: 1.15;
+}
+.odo-suffix {
+  vertical-align: top;
+}
+
+/* ─── Text Scramble ─── */
+.scramble-char {
+  display: inline;
+  transition: color 0.15s;
+}
+.scramble-char.resolved {
+  color: #D4920A;
+}
+.scramble-char.cycling {
+  font-family: var(--font-mono);
+  color: var(--color-tertiary);
+}
+
+/* ─── Kinetic Marquee ─── */
+.marquee-row {
+  display: flex;
+  white-space: nowrap;
+  will-change: transform;
+}
+.marquee-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 6px;
+  flex-shrink: 0;
+}
+.marquee-pill {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 20px;
+  border-radius: 100px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.marquee-pill-filled {
+  background: rgba(212, 146, 10, 0.1);
+  color: var(--color-forge-amber);
+  border: 1px solid rgba(212, 146, 10, 0.15);
+}
+.marquee-pill-outline {
+  background: transparent;
+  color: var(--color-secondary-text);
+  border: 1px solid var(--color-border);
+}
+
+/* ─── SVG Draw Path ─── */
+#step-draw-path {
+  filter: drop-shadow(0 0 4px rgba(212, 146, 10, 0.3));
+}
+
+/* ─── Skip Link (a11y) ─── */
+.skip-link {
+  position: fixed;
+  top: -100%;
+  left: 16px;
+  z-index: 9999;
+  padding: 12px 24px;
+  background: var(--color-void);
+  color: var(--color-forge-amber);
+  border: 1px solid var(--color-forge-amber);
+  border-radius: 8px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  text-decoration: none;
+  transition: top 0.2s;
+}
+.skip-link:focus {
+  top: 16px;
+}
+
+/* ─── Focus Visible ─── */
+:focus-visible {
+  outline: 2px solid var(--color-forge-amber);
+  outline-offset: 2px;
+}
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--color-forge-amber);
+  outline-offset: 2px;
+}
+
+/* ─── Reduced Motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .momentum-line { transform: scaleX(1); }
+  .reveal { opacity: 1; transform: none; }
+  #particle-canvas { display: none; }
+  .marquee-row { animation: none; }
+  .hud-btn__shimmer { animation: none; display: none; }
+}

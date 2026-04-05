@@ -1,0 +1,68 @@
+---
+const steps = [
+  {
+    num: '01',
+    title: 'We find the bottleneck.',
+    body: 'We assess your operations and identify the single highest-impact process to automate. No boil-the-ocean scope.',
+  },
+  {
+    num: '02',
+    title: 'We build the automation.',
+    body: 'In a focused 2–4 week sprint, we design, build, test, and deploy the automated workflow inside your existing stack.',
+  },
+  {
+    num: '03',
+    title: 'We leave it running.',
+    body: 'You get the live system, full documentation, team training, and 30 days of support. The system runs without us.',
+  },
+];
+---
+<section id="how-it-works" class="relative py-32 px-6">
+  <div class="max-w-[1100px] mx-auto">
+    <!-- Section Indicator -->
+    <div class="flex items-center gap-4 mb-10 reveal">
+      <span class="font-mono text-[14px] text-forge-amber">02</span>
+      <div class="flex-1 dotted-separator"></div>
+    </div>
+
+    <!-- Heading -->
+    <h2 class="font-serif font-normal text-primary-text leading-tight mb-16 reveal" style="font-size:clamp(32px,3.5vw,45px);">
+      How it works
+    </h2>
+
+    <!-- Steps Grid -->
+    <div class="relative grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- SVG Draw connector (desktop) -->
+      <svg class="hidden lg:block absolute top-[24px] left-[24px] right-[24px] h-[2px] w-[calc(100%-48px)] overflow-visible" id="step-connector-svg" preserveAspectRatio="none">
+        <path id="step-draw-path" d="" fill="none" stroke="url(#amberGrad)" stroke-width="2" stroke-linecap="round" />
+        <defs>
+          <linearGradient id="amberGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#A67208" />
+            <stop offset="50%" stop-color="#D4920A" />
+            <stop offset="100%" stop-color="#E5A100" />
+          </linearGradient>
+        </defs>
+      </svg>
+
+      {steps.map((step) => (
+        <div class="step-card relative">
+          <!-- Step Number -->
+          <div class="w-12 h-12 rounded-full bg-surface flex items-center justify-center mb-6 relative z-10">
+            <span class="font-mono font-medium text-[14px] text-forge-amber">{step.num}</span>
+          </div>
+          <!-- Title -->
+          <h3 class="font-serif font-normal text-primary-text text-[24px] leading-tight mb-4">
+            {step.title}
+          </h3>
+          <!-- Body -->
+          <p class="font-sans font-normal text-secondary-text text-[16px] leading-relaxed">
+            {step.body}
+          </p>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- Momentum Line -->
+  <div class="momentum-line"></div>
+</section>

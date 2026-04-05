@@ -1,0 +1,108 @@
+---
+import HudButton from './HudButton.astro';
+import Logo from './Logo.astro';
+---
+<header id="header" class="fixed top-0 left-0 w-full z-100 transition-all duration-300">
+  <div class="mx-auto max-w-[1200px] h-20 flex items-center justify-between px-6">
+    <!-- Logo -->
+    <Logo />
+
+    <!-- Desktop Nav -->
+    <nav class="hidden lg:flex items-center gap-8 relative">
+      <a href="#hero" class="nav-link font-sans font-medium text-[17px] tracking-[0.52px] text-primary-text hover:text-forge-amber transition-colors duration-200">Home</a>
+      <a href="#services" class="nav-link font-sans font-medium text-[17px] tracking-[0.52px] text-primary-text hover:text-forge-amber transition-colors duration-200">Services</a>
+      <a href="#founder" class="nav-link font-sans font-medium text-[17px] tracking-[0.52px] text-primary-text hover:text-forge-amber transition-colors duration-200">About</a>
+      <a href="#cta" class="nav-link font-sans font-medium text-[17px] tracking-[0.52px] text-primary-text hover:text-forge-amber transition-colors duration-200">Contact</a>
+      <!-- Active underline indicator -->
+      <div id="nav-underline" class="absolute bottom-0 h-[1px] transition-all duration-300" style="background:linear-gradient(90deg,#A67208,#D4920A,#E5A100);width:0;left:0;"></div>
+    </nav>
+
+    <!-- Desktop CTA -->
+    <div class="hidden lg:contents">
+      <HudButton text="Book a call" href="#cta" variant="secondary" compact={true} />
+    </div>
+
+    <!-- Mobile Hamburger -->
+    <button id="menu-toggle" class="lg:hidden flex flex-col gap-[5px] p-2 bg-transparent border-none cursor-pointer" aria-label="Toggle menu">
+      <span class="block w-6 h-[2px] bg-primary-text transition-all duration-300"></span>
+      <span class="block w-6 h-[2px] bg-primary-text transition-all duration-300"></span>
+      <span class="block w-6 h-[2px] bg-primary-text transition-all duration-300"></span>
+    </button>
+  </div>
+
+  <!-- Mobile Menu Overlay -->
+  <div id="mobile-menu" class="fixed inset-0 z-50 flex flex-col items-center justify-center gap-8 opacity-0 pointer-events-none transition-opacity duration-300" style="background:rgba(26,26,34,0.98);backdrop-filter:blur(12px);">
+    <button id="menu-close" class="absolute top-6 right-6 text-primary-text bg-transparent border-none cursor-pointer p-2" aria-label="Close menu">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <a href="#hero" class="mobile-nav-link font-serif text-[42px] tracking-[-0.85px] text-primary-text no-underline hover:text-forge-amber transition-colors duration-200">Home</a>
+    <a href="#services" class="mobile-nav-link font-serif text-[42px] tracking-[-0.85px] text-primary-text no-underline hover:text-forge-amber transition-colors duration-200">Services</a>
+    <a href="#founder" class="mobile-nav-link font-serif text-[42px] tracking-[-0.85px] text-primary-text no-underline hover:text-forge-amber transition-colors duration-200">About</a>
+    <a href="#cta" class="mobile-nav-link font-serif text-[42px] tracking-[-0.85px] text-primary-text no-underline hover:text-forge-amber transition-colors duration-200">Contact</a>
+    <HudButton text="Book a call" href="#cta" class="mt-4" />
+  </div>
+</header>
+
+<script>
+  const header = document.getElementById('header')!;
+  const menuToggle = document.getElementById('menu-toggle')!;
+  const menuClose = document.getElementById('menu-close')!;
+  const mobileMenu = document.getElementById('mobile-menu')!;
+  const mobileLinks = mobileMenu.querySelectorAll('.mobile-nav-link');
+
+  // Scroll state
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 100) {
+      header.style.background = 'rgba(10,10,16,0.95)';
+      header.style.backdropFilter = 'blur(8px)';
+    } else {
+      header.style.background = 'transparent';
+      header.style.backdropFilter = 'none';
+    }
+  });
+
+  // Mobile menu
+  menuToggle.addEventListener('click', () => {
+    mobileMenu.style.opacity = '1';
+    mobileMenu.style.pointerEvents = 'auto';
+  });
+  const closeMenu = () => {
+    mobileMenu.style.opacity = '0';
+    mobileMenu.style.pointerEvents = 'none';
+  };
+  menuClose.addEventListener('click', closeMenu);
+  mobileLinks.forEach((link) => link.addEventListener('click', closeMenu));
+
+  // Active section detection
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-link');
+  const underline = document.getElementById('nav-underline')!;
+
+  const updateUnderline = (link: Element) => {
+    const rect = link.getBoundingClientRect();
+    const navRect = link.parentElement!.getBoundingClientRect();
+    underline.style.width = `${rect.width}px`;
+    underline.style.left = `${rect.left - navRect.left}px`;
+  };
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          navLinks.forEach((link) => {
+            const href = link.getAttribute('href');
+            if (href === `#${id}` || (id === 'hero' && href === '#hero')) {
+              link.classList.add('!text-forge-amber');
+              updateUnderline(link);
+            } else {
+              link.classList.remove('!text-forge-amber');
+            }
+          });
+        }
+      });
+    },
+    { threshold: 0.3 }
+  );
+  sections.forEach((section) => observer.observe(section));
+</script>

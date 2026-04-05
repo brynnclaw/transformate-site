@@ -1,0 +1,30 @@
+---
+import HudButton from './HudButton.astro';
+---
+<section id="cta" class="relative min-h-screen flex flex-col items-center justify-center px-6 py-24">
+  <div class="max-w-[800px] mx-auto text-center">
+    <!-- Headline -->
+    <h2 class="font-serif font-normal text-primary-text leading-tight mb-6 reveal" style="font-size:clamp(36px,4.5vw,67px);">
+      Ready to stop paying for transformation you never receive?
+    </h2>
+
+    <!-- Sub-copy -->
+    <p class="font-sans font-light text-secondary-text text-[24px] leading-snug mb-10 reveal">
+      AI automation that replaces your most painful processes. Live in 2–4 weeks.
+    </p>
+
+    <!-- CTA Button -->
+    <div class="mb-8 reveal">
+      <HudButton text="Book a call" href="#" id="calendly-trigger" variant="primary" />
+    </div>
+
+    <!-- Calendly Embed Container — hidden until valid URL is set -->
+    <!-- To enable: replace the data-url below with your real Calendly link and remove the hidden class -->
+    <div id="calendly-embed" class="hidden max-w-[600px] mx-auto mt-8 rounded-[12px] overflow-hidden" style="min-height:630px;">
+      <div class="calendly-inline-widget" data-url="https://calendly.com/transformateai/discovery" style="min-width:320px;height:630px;"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Calendly script — uncomment when embed is enabled -->
+<!-- <script is:inline src="https://assets.calendly.com/assets/external/widget.js" async></script> -->

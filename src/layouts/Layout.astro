@@ -1,0 +1,541 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+}
+const {
+  title,
+  description = "AI automation that replaces your most painful processes. Live in 2\u20134 weeks. We don't leave until it works.",
+  ogImage = '/og.png',
+} = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, 'https://transformateai.com');
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(ogImage, 'https://transformateai.com')} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(ogImage, 'https://transformateai.com')} />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <title>{title}</title>
+    <script defer data-domain="transformateai.com" src="https://plausible.io/js/script.js"></script>
+  </head>
+  <body>
+    <!-- Skip to content (a11y) -->
+    <a href="#hero" class="skip-link">Skip to content</a>
+    <slot />
+    <script>
+      import { gsap } from 'gsap';
+      import { ScrollTrigger } from 'gsap/ScrollTrigger';
+      import Lenis from 'lenis';
+
+      gsap.registerPlugin(ScrollTrigger);
+
+      // ─── Lenis smooth scroll ───
+      const lenis = new Lenis({
+        duration: 1.2,
+        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      });
+
+      lenis.on('scroll', ScrollTrigger.update);
+      gsap.ticker.add((time) => lenis.raf(time * 1000));
+      gsap.ticker.lagSmoothing(0);
+
+      // Smooth scroll for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener('click', (e) => {
+          e.preventDefault();
+          const target = document.querySelector((anchor as HTMLAnchorElement).getAttribute('href')!);
+          if (target) lenis.scrollTo(target as HTMLElement);
+        });
+      });
+
+      // ─── ANIMATIONS ───
+      const ease = 'power3.out';
+
+      // HERO: Split-text reveal
+      const heroWords = document.querySelectorAll('.hero-word');
+      const heroSubtitle = document.getElementById('hero-subtitle');
+      const heroButtons = document.getElementById('hero-buttons');
+      const heroStats = document.getElementById('hero-stats');
+
+      if (heroWords.length) {
+        const heroTl = gsap.timeline({ delay: 0.3 });
+
+        heroWords.forEach((word, i) => {
+          const isEmphasis = word.classList.contains('hero-emphasis');
+          const delay = isEmphasis ? 0.7 : i * 0.1;
+          const duration = isEmphasis ? 0.8 : 0.6;
+          const easing = isEmphasis ? 'back.out(1.7)' : ease;
+
+          heroTl.to(word, {
+            opacity: 1,
+            y: 0,
+            duration,
+            ease: easing,
+            ...(isEmphasis ? { color: '#D4920A' } : {}),
+          }, delay);
+        });
+
+        if (heroSubtitle) {
+          heroTl.to(heroSubtitle, { opacity: 1, y: 0, duration: 0.6, ease }, 0.9);
+        }
+        if (heroButtons) {
+          heroTl.to(heroButtons, { opacity: 1, y: 0, duration: 0.5, ease }, 1.1);
+        }
+        if (heroStats) {
+          heroTl.to(heroStats, { opacity: 1, duration: 0.4 }, 1.3);
+        }
+
+        const scrollHint = document.getElementById('hero-scroll-hint');
+        if (scrollHint) {
+          heroTl.to(scrollHint, { opacity: 1, duration: 0.6, ease: 'power2.out' }, 1.6);
+          // Fade out on scroll
+          ScrollTrigger.create({
+            trigger: '#hero',
+            start: 'top top',
+            end: '+=200',
+            onUpdate: (self) => {
+              (scrollHint as HTMLElement).style.opacity = String(1 - self.progress);
+            },
+          });
+        }
+      }
+
+      // GENERIC REVEAL for .reveal elements
+      document.querySelectorAll('.reveal').forEach((el) => {
+        gsap.fromTo(el,
+          { opacity: 0, y: 40 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.7,
+            ease,
+            scrollTrigger: {
+              trigger: el,
+              start: 'top 85%',
+              toggleActions: 'play none none none',
+            },
+          }
+        );
+      });
+
+      // MOMENTUM LINES: scroll-scrub
+      document.querySelectorAll('.momentum-line').forEach((line) => {
+        gsap.to(line, {
+          scaleX: 1,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: line.parentElement,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: true,
+          },
+        });
+      });
+
+      // ─── SVG DRAW CONNECTOR (HowItWorks) ───
+      const drawPath = document.getElementById('step-draw-path') as SVGPathElement | null;
+      const drawSvg = document.getElementById('step-connector-svg');
+      if (drawPath && drawSvg) {
+        // Build the path dynamically based on step circle positions
+        const stepCircles = document.querySelectorAll('.step-card .w-12');
+        if (stepCircles.length >= 3) {
+          const svgRect = drawSvg.getBoundingClientRect();
+          const points: { x: number; y: number }[] = [];
+          stepCircles.forEach((circle) => {
+            const r = circle.getBoundingClientRect();
+            points.push({
+              x: r.left + r.width / 2 - svgRect.left,
+              y: 0,
+            });
+          });
+          // Straight line through step centers
+          drawPath.setAttribute('d', `M${points[0].x},0 L${points[points.length - 1].x},0`);
+          const len = drawPath.getTotalLength();
+          drawPath.style.strokeDasharray = String(len);
+          drawPath.style.strokeDashoffset = String(len);
+
+          gsap.to(drawPath, {
+            strokeDashoffset: 0,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: '#how-it-works',
+              start: 'top 60%',
+              end: 'bottom 60%',
+              scrub: 0.3,
+            },
+          });
+        }
+      }
+
+      // ─── ODOMETER COUNTERS (Proof section) ───
+      document.querySelectorAll('.odometer').forEach((odo) => {
+        const val = odo.getAttribute('data-value') || '0';
+        const suffix = odo.getAttribute('data-suffix') || '';
+        const digits = val.split('');
+
+        // Build digit strips
+        odo.innerHTML = '';
+        digits.forEach((d) => {
+          const digit = document.createElement('div');
+          digit.className = 'odo-digit';
+          const strip = document.createElement('div');
+          strip.className = 'odo-strip';
+          for (let i = 0; i <= 9; i++) {
+            const s = document.createElement('span');
+            s.textContent = String(i);
+            strip.appendChild(s);
+          }
+          digit.appendChild(strip);
+          odo.appendChild(digit);
+        });
+
+        if (suffix) {
+          const s = document.createElement('span');
+          s.className = 'odo-suffix';
+          s.textContent = suffix;
+          odo.appendChild(s);
+        }
+
+        ScrollTrigger.create({
+          trigger: odo,
+          start: 'top 85%',
+          once: true,
+          onEnter: () => {
+            const strips = odo.querySelectorAll('.odo-strip');
+            strips.forEach((strip, i) => {
+              const target = parseInt(digits[i]);
+              const h = (strip.children[0] as HTMLElement).offsetHeight;
+              (strip as HTMLElement).style.transform = `translateY(-${target * h}px)`;
+              (strip as HTMLElement).style.transitionDelay = `${i * 0.12}s`;
+            });
+          },
+        });
+      });
+
+      // Typewriter for "Fixed"
+      document.querySelectorAll('.stat-text').forEach((el) => {
+        const text = (el as HTMLElement).textContent || '';
+        (el as HTMLElement).textContent = '';
+
+        ScrollTrigger.create({
+          trigger: el,
+          start: 'top 85%',
+          onEnter: () => {
+            let i = 0;
+            const interval = setInterval(() => {
+              (el as HTMLElement).textContent = text.substring(0, i + 1);
+              i++;
+              if (i >= text.length) clearInterval(interval);
+            }, 50);
+          },
+          once: true,
+        });
+      });
+
+      // ─── SERVICE CARDS: stagger entrance ───
+      const sCards = document.querySelectorAll('.service-card');
+      if (sCards.length) {
+        gsap.set(sCards, { opacity: 0, y: 60 });
+        gsap.to(sCards, {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          stagger: 0.15,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: sCards[0],
+            start: 'top 85%',
+            toggleActions: 'play none none none',
+          },
+        });
+      }
+
+      // ─── ROTATING GLOW BORDER (cursor-following) ───
+      const glowCards = document.querySelectorAll('.service-card');
+      glowCards.forEach((card) => {
+        const glowEl = card.querySelector('.service-glow') as HTMLElement | null;
+        if (!glowEl) return;
+
+        let currentAngle = 0;
+        let tween: ReturnType<typeof gsap.to> | null = null;
+        const proximity = 100;
+        const inactiveZone = 0.7;
+
+        const handlePointer = (e: PointerEvent) => {
+          const rect = card.getBoundingClientRect();
+          const centerX = rect.left + rect.width / 2;
+          const centerY = rect.top + rect.height / 2;
+
+          // Inactive zone check
+          const distFromCenter = Math.hypot(e.clientX - centerX, e.clientY - centerY);
+          const inactiveRadius = 0.5 * Math.min(rect.width, rect.height) * inactiveZone;
+          if (distFromCenter < inactiveRadius) {
+            glowEl.style.setProperty('--active', '0');
+            return;
+          }
+
+          // Proximity check
+          const isActive =
+            e.clientX > rect.left - proximity &&
+            e.clientX < rect.right + proximity &&
+            e.clientY > rect.top - proximity &&
+            e.clientY < rect.bottom + proximity;
+
+          glowEl.style.setProperty('--active', isActive ? '1' : '0');
+          if (!isActive) return;
+
+          // Calculate angle from center to cursor
+          let targetAngle = (180 * Math.atan2(e.clientY - centerY, e.clientX - centerX)) / Math.PI + 90;
+          const angleDiff = ((targetAngle - currentAngle + 180) % 360) - 180;
+          const newAngle = currentAngle + angleDiff;
+
+          // Animate angle smoothly with GSAP
+          if (tween) tween.kill();
+          const obj = { val: currentAngle };
+          tween = gsap.to(obj, {
+            val: newAngle,
+            duration: 2,
+            ease: 'expo.out',
+            onUpdate: () => {
+              currentAngle = obj.val;
+              glowEl.style.setProperty('--start', String(currentAngle));
+            },
+          });
+        };
+
+        document.body.addEventListener('pointermove', handlePointer, { passive: true });
+      });
+
+      // STEP CARDS: stagger slide-up
+      const stepCards = document.querySelectorAll('.step-card');
+      if (stepCards.length) {
+        gsap.set(stepCards, { opacity: 0, y: 60 });
+        gsap.to(stepCards, {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          stagger: 0.2,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: stepCards[0],
+            start: 'top 85%',
+            toggleActions: 'play none none none',
+          },
+        });
+      }
+
+      // FAQ ITEMS: stagger fade-up
+      const faqItems = document.querySelectorAll('.faq-item');
+      if (faqItems.length) {
+        gsap.set(faqItems, { opacity: 0, y: 30 });
+        gsap.to(faqItems, {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          stagger: 0.1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: faqItems[0],
+            start: 'top 85%',
+            toggleActions: 'play none none none',
+          },
+        });
+      }
+
+      // FOOTER SEPARATOR
+      const footerSep = document.getElementById('footer-separator');
+      if (footerSep) {
+        gsap.to(footerSep, {
+          scaleX: 1,
+          duration: 0.6,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: footerSep,
+            start: 'top 90%',
+            toggleActions: 'play none none none',
+          },
+        });
+      }
+
+      // ─── HUD BUTTONS ───
+      const hudScrambleChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      const hudBtns = document.querySelectorAll('.hud-btn');
+      hudBtns.forEach((btn) => {
+        const strokePath = btn.querySelector('.hud-btn__stroke') as SVGPathElement | null;
+        const fillPath = btn.querySelector('.hud-btn__fill') as SVGPathElement | null;
+        const label = btn.querySelector('.hud-btn__label') as HTMLElement | null;
+        const isHero = btn.closest('#hero') !== null;
+        const isHeader = btn.closest('header') !== null;
+
+        // Draw-in entrance for scroll-triggered buttons (CTA section, etc.)
+        if (!isHero && !isHeader && strokePath && fillPath) {
+          const len = strokePath.getTotalLength();
+          gsap.set(strokePath, { strokeDasharray: len, strokeDashoffset: len });
+          gsap.set(fillPath, { opacity: 0 });
+
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              trigger: btn,
+              start: 'top 85%',
+              toggleActions: 'play none none none',
+            },
+          });
+          tl.to(strokePath, { strokeDashoffset: 0, duration: 0.8, ease: 'power2.out' });
+          tl.to(fillPath, { opacity: 1, duration: 0.4, ease: 'power2.out' }, '-=0.3');
+        }
+
+        // Header button: subtle draw-in on page load
+        if (isHeader && strokePath && fillPath) {
+          const len = strokePath.getTotalLength();
+          gsap.set(strokePath, { strokeDasharray: len, strokeDashoffset: len });
+          gsap.set(fillPath, { opacity: 0 });
+
+          const tl = gsap.timeline({ delay: 0.5 });
+          tl.to(strokePath, { strokeDashoffset: 0, duration: 0.6, ease: 'power2.out' });
+          tl.to(fillPath, { opacity: 1, duration: 0.3, ease: 'power2.out' }, '-=0.2');
+        }
+
+        // Hover text scramble (all HUD buttons)
+        if (label) {
+          const originalText = label.textContent || '';
+          let rafId = 0;
+
+          btn.addEventListener('mouseenter', () => {
+            cancelAnimationFrame(rafId);
+            const len = originalText.length;
+            let startTime: number | null = null;
+
+            function frame(ts: number) {
+              if (!startTime) startTime = ts;
+              const progress = Math.min((ts - startTime) / 400, 1);
+              let result = '';
+              for (let i = 0; i < len; i++) {
+                if (originalText[i] === ' ') { result += ' '; continue; }
+                const threshold = (i / len) * 0.7 + 0.15;
+                result += progress >= threshold
+                  ? originalText[i]
+                  : hudScrambleChars[Math.floor(Math.random() * hudScrambleChars.length)];
+              }
+              label.textContent = result;
+              if (progress < 1) rafId = requestAnimationFrame(frame);
+            }
+            rafId = requestAnimationFrame(frame);
+          });
+
+          btn.addEventListener('mouseleave', () => {
+            cancelAnimationFrame(rafId);
+            label.textContent = originalText;
+          });
+        }
+      });
+
+      // ─── TEXT SCRAMBLE (Hero emphasis word) ───
+      const scrambleChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&*';
+
+      function scrambleText(el: HTMLElement, finalText: string, duration: number = 1200) {
+        const len = finalText.length;
+        let startTime: number | null = null;
+
+        function frame(ts: number) {
+          if (!startTime) startTime = ts;
+          const elapsed = ts - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+
+          let html = '';
+          for (let i = 0; i < len; i++) {
+            if (finalText[i] === ' ') {
+              html += ' ';
+              continue;
+            }
+            const charThreshold = (i / len) * 0.7 + 0.15;
+            if (progress >= charThreshold) {
+              html += `<span class="scramble-char resolved">${finalText[i]}</span>`;
+            } else {
+              html += `<span class="scramble-char cycling">${scrambleChars[Math.floor(Math.random() * scrambleChars.length)]}</span>`;
+            }
+          }
+          el.innerHTML = html;
+          if (progress < 1) requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+      }
+
+      // Apply scramble to hero emphasis word after it animates in
+      const heroEmphasis = document.querySelector('[data-scramble]') as HTMLElement | null;
+      if (heroEmphasis) {
+        const finalText = heroEmphasis.getAttribute('data-scramble') || '';
+        // Wait for the hero timeline to reach the emphasis word (~1.5s)
+        setTimeout(() => {
+          scrambleText(heroEmphasis, finalText, 800);
+        }, 1500);
+      }
+
+      // ─── KINETIC MARQUEE ───
+      const marqueeRows = document.querySelectorAll('.marquee-row');
+      if (marqueeRows.length) {
+        // Clone content for seamless loop
+        marqueeRows.forEach((row) => {
+          const content = row.querySelector('.marquee-content');
+          if (content) {
+            // Need at least 3 copies for seamless loop
+            const clone1 = content.cloneNode(true);
+            const clone2 = content.cloneNode(true);
+            row.appendChild(clone1);
+            row.appendChild(clone2);
+          }
+        });
+
+        const baseSpeed = 60; // px per second
+        let scrollVelocity = 0;
+
+        ScrollTrigger.create({
+          onUpdate: (self) => {
+            scrollVelocity = Math.abs(self.getVelocity());
+          },
+        });
+
+        marqueeRows.forEach((row) => {
+          const content = row.querySelector('.marquee-content') as HTMLElement;
+          if (!content) return;
+          const direction = (row as HTMLElement).dataset.direction === 'right' ? 1 : -1;
+          const speedMult = parseFloat((row as HTMLElement).dataset.speed || '1');
+          const contentWidth = content.offsetWidth;
+          let x = direction === -1 ? 0 : -contentWidth;
+
+          function animate() {
+            const speed = (baseSpeed + scrollVelocity * 0.1) * speedMult;
+            x += direction * speed / 60;
+
+            if (direction === -1 && x <= -contentWidth) x += contentWidth;
+            if (direction === 1 && x >= 0) x -= contentWidth;
+
+            (row as HTMLElement).style.transform = `translateX(${x}px)`;
+            requestAnimationFrame(animate);
+          }
+          animate();
+        });
+      }
+    </script>
+  </body>
+</html>

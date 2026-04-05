@@ -1,0 +1,22 @@
+---
+const row1 = ['n8n', 'Make', 'OpenAI', 'Custom Pipelines', 'Data Extraction', 'Zapier', 'Python', 'Slack Bots', 'CRM Sync', 'Document AI'];
+const row2 = ['Process Automation', 'Workflow Design', 'API Integration', 'AI Agents', 'ETL Pipelines', 'Reporting', 'Lead Routing', 'Invoice Processing'];
+---
+<section class="relative py-10 overflow-hidden" id="marquee-section">
+  <!-- Row 1: Filled pills — scrolls left -->
+  <div class="marquee-row mb-3" data-speed="1" data-direction="left">
+    <div class="marquee-content">
+      {row1.map((item) => (
+        <span class="marquee-pill marquee-pill-filled">{item}</span>
+      ))}
+    </div>
+  </div>
+  <!-- Row 2: Outline pills — scrolls right -->
+  <div class="marquee-row" data-speed="0.7" data-direction="right">
+    <div class="marquee-content">
+      {row2.map((item) => (
+        <span class="marquee-pill marquee-pill-outline">{item}</span>
+      ))}
+    </div>
+  </div>
+</section>

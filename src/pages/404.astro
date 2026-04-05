@@ -1,0 +1,19 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Logo from '../components/Logo.astro';
+import HudButton from '../components/HudButton.astro';
+import '../styles/global.css';
+---
+
+<Layout title="404 — Transformate AI">
+  <main class="min-h-screen flex flex-col items-center justify-center px-6 py-24 text-center">
+    <Logo class="mb-12" />
+    <h1 class="font-serif font-normal text-primary-text leading-tight mb-4" style="font-size:clamp(48px,6vw,72px);">
+      404
+    </h1>
+    <p class="font-sans text-secondary-text text-[20px] mb-10 max-w-[440px]">
+      This page doesn't exist — but your automation will. Let's talk.
+    </p>
+    <HudButton text="Back to home" href="/" variant="primary" />
+  </main>
+</Layout>

@@ -1,0 +1,55 @@
+---
+import Logo from './Logo.astro';
+const internalLinks = [
+  { label: 'Home', href: '#hero' },
+  { label: 'Services', href: '#services' },
+  { label: 'About', href: '#founder' },
+  { label: 'Contact', href: '#cta' },
+];
+const externalLinks = [
+  { label: 'Arkon', href: 'https://github.com/arkon-ai/arkon' },
+  { label: 'LinkedIn', href: 'https://linkedin.com/company/transformateai' },
+  { label: 'X', href: 'https://x.com/transformateai' },
+];
+---
+<footer class="relative py-12 px-6">
+  <div class="max-w-[1100px] mx-auto">
+    <!-- Logo -->
+    <div class="mb-6 reveal">
+      <Logo />
+    </div>
+
+    <!-- Dotted Separator -->
+    <div class="dotted-separator mb-6" style="transform:scaleX(0);transform-origin:left;" id="footer-separator"></div>
+
+    <!-- Links -->
+    <div class="flex flex-wrap items-center gap-3 mb-6 reveal">
+      {internalLinks.map((link, i) => (
+        <>
+          <a href={link.href} class="font-sans text-[16px] text-secondary-text no-underline hover:text-primary-text transition-colors duration-200">{link.label}</a>
+          <span class="text-tertiary">·</span>
+        </>
+      ))}
+      {externalLinks.map((link, i) => (
+        <>
+          <a href={link.href} target="_blank" rel="noopener noreferrer" class="footer-ext-link font-sans text-[16px] text-secondary-text no-underline hover:text-primary-text transition-colors duration-200 inline-flex items-center gap-1">
+            {link.label}
+            <span class="text-[11px] inline-block transition-transform duration-200">↗</span>
+          </a>
+          {i < externalLinks.length - 1 && <span class="text-tertiary">·</span>}
+        </>
+      ))}
+    </div>
+
+    <!-- Copyright -->
+    <p class="font-sans text-[14px] text-tertiary reveal">
+      © 2026 Transformate AI — We don't leave until it works.
+    </p>
+  </div>
+</footer>
+
+<style>
+  .footer-ext-link:hover span {
+    transform: translate(2px, -2px);
+  }
+</style>

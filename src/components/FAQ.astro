@@ -1,0 +1,95 @@
+---
+const faqs = [
+  {
+    q: 'How long does a typical engagement take?',
+    a: 'Signal engagements are fixed-scope and typically complete in 1–2 weeks. Sprints run 2–4 weeks. Overhauls run 4–8 weeks. We commit to a timeline upfront and stick to it.',
+  },
+  {
+    q: "What if the automation doesn't work?",
+    a: "We don't leave until it does. That's not a tagline — it's how we operate. If the system isn't performing as promised, we keep working until it is. No additional charge.",
+  },
+  {
+    q: 'Do we need technical expertise on our team?',
+    a: 'No. We build systems that non-technical teams can use and maintain. Full training is included in every engagement.',
+  },
+  {
+    q: 'What happens after the engagement ends?',
+    a: 'The system runs. You own it completely. If you need ongoing support, we offer packages — but the goal is independence.',
+  },
+  {
+    q: 'How is this different from hiring a consultant?',
+    a: "Consultants advise. We build. You don't get a strategy document — you get a working system. Fixed price, fixed timeline, working result.",
+  },
+  {
+    q: 'Do you work with international clients?',
+    a: 'Yes. We deliver remotely to clients in South Africa, the US, the UK, and Europe. Sprint and Signal engagements are fully remote.',
+  },
+];
+---
+<section id="faq" class="relative py-32 px-6">
+  <div class="max-w-[800px] mx-auto">
+    <!-- Section Indicator -->
+    <div class="flex items-center gap-4 mb-10 reveal">
+      <span class="font-mono text-[14px] text-forge-amber">06</span>
+      <div class="flex-1 dotted-separator"></div>
+    </div>
+
+    <!-- Heading -->
+    <h2 class="font-serif font-normal text-primary-text leading-tight mb-12 reveal" style="font-size:clamp(32px,3.5vw,45px);">
+      Questions we get asked.
+    </h2>
+
+    <!-- Accordion -->
+    <div id="faq-accordion">
+      {faqs.map((faq, i) => (
+        <div class="faq-item border-t border-border" data-index={i}>
+          <button class="faq-trigger w-full flex items-center justify-between py-6 bg-transparent border-none cursor-pointer text-left" aria-expanded="false">
+            <span class="font-sans font-medium text-primary-text text-[18px] pr-4">{faq.q}</span>
+            <span class="faq-icon text-forge-amber text-[24px] shrink-0 transition-transform duration-300 leading-none">+</span>
+          </button>
+          <div class="faq-answer overflow-hidden transition-all duration-300" style="max-height:0;">
+            <p class="font-sans text-[16px] text-secondary-text leading-relaxed pb-6 pt-0">
+              {faq.a}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  const accordion = document.getElementById('faq-accordion')!;
+  const items = accordion.querySelectorAll('.faq-item');
+
+  items.forEach((item) => {
+    const trigger = item.querySelector('.faq-trigger')!;
+    const answer = item.querySelector('.faq-answer') as HTMLElement;
+    const icon = item.querySelector('.faq-icon') as HTMLElement;
+
+    trigger.addEventListener('click', () => {
+      const isOpen = trigger.getAttribute('aria-expanded') === 'true';
+
+      // Close all
+      items.forEach((other) => {
+        const otherTrigger = other.querySelector('.faq-trigger')!;
+        const otherAnswer = other.querySelector('.faq-answer') as HTMLElement;
+        const otherIcon = other.querySelector('.faq-icon') as HTMLElement;
+        otherTrigger.setAttribute('aria-expanded', 'false');
+        otherAnswer.style.maxHeight = '0';
+        otherIcon.style.transform = 'rotate(0deg)';
+        other.classList.remove('border-forge-amber');
+        other.classList.add('border-border');
+      });
+
+      // Toggle clicked
+      if (!isOpen) {
+        trigger.setAttribute('aria-expanded', 'true');
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+        icon.style.transform = 'rotate(45deg)';
+        item.classList.remove('border-border');
+        item.classList.add('border-forge-amber');
+      }
+    });
+  });
+</script>

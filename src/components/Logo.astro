@@ -1,0 +1,38 @@
+---
+interface Props {
+  class?: string;
+}
+const { class: className = '' } = Astro.props;
+---
+<a href="#hero" class:list={['logo', className]} aria-label="Transformate AI — Home">
+  <svg class="logo__icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <rect x="1" y="1" width="38" height="38" rx="14" stroke="#D4920A" stroke-width="1.5" fill="rgba(212,146,10,0.08)" />
+    <!-- Crossbar -->
+    <line x1="11" y1="13.5" x2="29" y2="13.5" stroke="#E5A100" stroke-width="5.5" stroke-linecap="round" />
+    <!-- Stem -->
+    <line x1="20" y1="13.5" x2="20" y2="30" stroke="#E5A100" stroke-width="4" stroke-linecap="round" />
+  </svg>
+  <span class="logo__text">TRANSFORMATE</span>
+</a>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .logo__icon {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+  }
+  .logo__text {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    letter-spacing: 0.08em;
+    color: var(--color-forge-amber);
+    line-height: 1;
+  }
+</style>
