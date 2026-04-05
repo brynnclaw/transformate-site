@@ -3,23 +3,20 @@ const tiers = [
   {
     tag: 'SIGNAL',
     title: 'The proof of concept',
-    timeline: 'Fixed scope',
-    price: 'From $750',
-    body: "You have a process that's eating your team's time. We identify it, scope it, and automate it — remotely, in a fixed engagement. You get a working system and proof that AI automation works for your business. If the result convinces you, we move to a Sprint. If it doesn't, you keep the automation and we part ways.",
+    badges: ['Fixed scope', 'Typically 1–2 weeks'],
+    body: "You have a process that's eating your team's time. We identify it, scope it, and build the system that handles it — remotely, in a focused engagement. You get a working result and proof that this approach works for your business. If it convinces you, we move to a Sprint. If it doesn't, you keep the system and we part ways.",
   },
   {
     tag: 'SPRINT',
     title: 'The core transformation',
-    timeline: '2–4 weeks',
-    price: 'From $2,500',
-    body: "This is the engagement that changes your business. We come in (remotely or on-site for SA clients), spend two to four weeks embedded in your operations, and deliver a fully automated workflow that replaces your most painful process. You get: the live system, documentation, training for your team, and 30 days of email support. The system runs without us.",
+    badges: ['2–4 weeks', 'Our flagship'],
+    body: "This is the engagement that changes your business. Full assessment, build, and handover. We spend two to four weeks embedded in your operations and deliver a system that replaces your most painful process. You get: the live system, documentation, training, and 30 days of support. The system runs without us.",
   },
   {
     tag: 'OVERHAUL',
     title: 'The full restructure',
-    timeline: '4–8 weeks',
-    price: 'From $8,000',
-    body: "For organisations with multiple broken processes or complex multi-stakeholder environments. We work across departments and systems over four to eight weeks, delivering a suite of interconnected automations with executive-level reporting. You get: multiple live systems, an ROI report, full documentation, team training, and 60 days of priority support.",
+    badges: ['4–8 weeks', 'Multi-process'],
+    body: "For organisations with multiple broken processes or complex multi-stakeholder environments. We work across departments and systems, delivering a suite of interconnected systems with executive-level reporting. Multiple live systems, ROI report, full documentation, team training, and 60 days of priority support.",
   },
 ];
 ---
@@ -27,7 +24,7 @@ const tiers = [
   <div class="max-w-[1100px] mx-auto">
     <!-- Section Indicator -->
     <div class="flex items-center gap-4 mb-10 reveal">
-      <span class="font-mono text-[14px] text-forge-amber">03</span>
+      <span class="font-mono text-[14px] text-forge-amber">04</span>
       <div class="flex-1 dotted-separator"></div>
     </div>
 
@@ -46,21 +43,28 @@ const tiers = [
           <span class="font-mono font-medium text-[14px] text-forge-amber tracking-[2px] mb-4">{tier.tag}</span>
           <!-- Title -->
           <h3 class="font-serif font-normal text-primary-text text-[24px] leading-tight mb-3">{tier.title}</h3>
-          <!-- Timeline -->
-          <span class="font-sans text-[16px] text-secondary-text mb-4">{tier.timeline}</span>
+          <!-- Badges -->
+          <div class="flex flex-wrap gap-2 mb-4">
+            {tier.badges.map((badge) => (
+              <span class="font-mono text-[12px] text-secondary-text tracking-[0.5px] border border-border rounded-full px-3 py-1">{badge}</span>
+            ))}
+          </div>
           <!-- Dotted separator -->
           <div class="dotted-separator my-4"></div>
-          <!-- Price -->
-          <span class="font-mono font-medium text-primary-text mb-6" style="font-size:clamp(24px,2vw,28px);">{tier.price}</span>
           <!-- Body -->
           <p class="font-sans text-[16px] text-secondary-text leading-relaxed mb-8 flex-1">{tier.body}</p>
           <!-- CTA -->
           <a href="#cta" class="font-sans text-forge-amber text-[16px] no-underline hover:text-bright-amber transition-colors duration-200 inline-flex items-center gap-1 self-center">
-            Book a call <span class="inline-block transition-transform duration-200 group-hover:translate-x-1">→</span>
+            Get a proposal <span class="inline-block transition-transform duration-200 group-hover:translate-x-1">→</span>
           </a>
         </div>
       ))}
     </div>
+
+    <!-- Pricing note -->
+    <p class="font-sans text-[14px] text-tertiary text-center mt-8 reveal">
+      Pricing is scoped per engagement based on complexity and region. Book a call and we'll have a clear proposal within 48 hours.
+    </p>
   </div>
 
   <!-- Momentum Line -->
