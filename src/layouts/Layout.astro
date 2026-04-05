@@ -253,6 +253,96 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://transformateai.com');
         });
       });
 
+      // ─── BROKEN CARDS: alternating stagger + reveal ───
+      const brokenCards = document.querySelectorAll('.broken-card');
+      if (brokenCards.length) {
+        brokenCards.forEach((card, i) => {
+          const fromX = i % 2 === 0 ? -60 : 60; // alternate left/right
+          const border = card.querySelector('.broken-card__border') as HTMLElement | null;
+          const solution = card.querySelector('.broken-card__solution') as HTMLElement | null;
+          const example = card.querySelector('.broken-card__example') as HTMLElement | null;
+
+          gsap.set(card, { opacity: 0, x: fromX });
+
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              trigger: card,
+              start: 'top 85%',
+              toggleActions: 'play none none none',
+            },
+          });
+
+          // Card slides in
+          tl.to(card, { opacity: 1, x: 0, duration: 0.7, ease: 'power3.out' });
+
+          // Amber border draws in
+          if (border) {
+            tl.to(border, { scaleY: 1, duration: 0.5, ease: 'power2.out' }, '-=0.3');
+          }
+
+          // Solution text fades in
+          if (solution) {
+            tl.to(solution, { opacity: 1, duration: 0.4, ease: 'power2.out' }, '-=0.2');
+          }
+
+          // Example fades in last
+          if (example) {
+            tl.to(example, { opacity: 1, duration: 0.3, ease: 'power2.out' }, '-=0.1');
+          }
+        });
+
+        // Cursor-following glow (reuse service card glow logic)
+        brokenCards.forEach((card) => {
+          const glowEl = card.querySelector('.service-glow') as HTMLElement | null;
+          if (!glowEl) return;
+
+          let currentAngle = 0;
+          let tween: ReturnType<typeof gsap.to> | null = null;
+          const proximity = 100;
+          const inactiveZone = 0.7;
+
+          const handlePointer = (e: PointerEvent) => {
+            const rect = card.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            const distFromCenter = Math.hypot(e.clientX - centerX, e.clientY - centerY);
+            const inactiveRadius = 0.5 * Math.min(rect.width, rect.height) * inactiveZone;
+            if (distFromCenter < inactiveRadius) {
+              glowEl.style.setProperty('--active', '0');
+              return;
+            }
+
+            const isActive =
+              e.clientX > rect.left - proximity &&
+              e.clientX < rect.right + proximity &&
+              e.clientY > rect.top - proximity &&
+              e.clientY < rect.bottom + proximity;
+
+            glowEl.style.setProperty('--active', isActive ? '1' : '0');
+            if (!isActive) return;
+
+            let targetAngle = (180 * Math.atan2(e.clientY - centerY, e.clientX - centerX)) / Math.PI + 90;
+            const angleDiff = ((targetAngle - currentAngle + 180) % 360) - 180;
+            const newAngle = currentAngle + angleDiff;
+
+            if (tween) tween.kill();
+            const obj = { val: currentAngle };
+            tween = gsap.to(obj, {
+              val: newAngle,
+              duration: 2,
+              ease: 'expo.out',
+              onUpdate: () => {
+                currentAngle = obj.val;
+                glowEl.style.setProperty('--start', String(currentAngle));
+              },
+            });
+          };
+
+          document.body.addEventListener('pointermove', handlePointer, { passive: true });
+        });
+      }
+
       // ─── SERVICE CARDS: stagger entrance ───
       const sCards = document.querySelectorAll('.service-card');
       if (sCards.length) {

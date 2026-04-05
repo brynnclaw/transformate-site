@@ -13,6 +13,7 @@
   --color-primary-text: #E4E4ED;
   --color-secondary-text: #8888A0;
   --color-tertiary: #555566;
+  --color-slate: #7A8B9D;
 
   --font-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
@@ -289,6 +290,36 @@ main, header, footer {
       #fff,
       #00000000 calc(var(--spread) * 2deg)
     );
+}
+
+/* ─── Broken Card (What's Broken section) ─── */
+.broken-card {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.3s ease,
+              border-color 0.3s ease;
+  cursor: default;
+  overflow: hidden;
+}
+.broken-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(212, 146, 10, 0.4);
+  box-shadow:
+    0 14px 48px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(212, 146, 10, 0.1),
+    0 0 32px rgba(212, 146, 10, 0.12),
+    0 0 64px rgba(212, 146, 10, 0.06);
+}
+
+/* Amber solution border (left edge, draws in via GSAP) */
+.broken-card__border {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(180deg, #A67208, #D4920A, #E5A100);
+  transform: scaleY(0);
+  transform-origin: top;
 }
 
 /* ─── Step card hover ─── */

@@ -51,17 +51,37 @@ const cards = [
     <!-- Pain Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
       {cards.map((card, i) => (
-        <div class:list={['broken-card border border-border rounded-[13px] p-8 reveal', i === cards.length - 1 && cards.length % 2 !== 0 ? 'md:col-span-2 md:max-w-[calc(50%-12px)]' : '']} style="background:var(--color-surface);">
+        <div
+          class:list={[
+            'broken-card relative border border-border rounded-[16px] p-8',
+            i === cards.length - 1 && cards.length % 2 !== 0 ? 'md:col-span-2 md:max-w-[calc(50%-12px)]' : '',
+          ]}
+          style="background:var(--color-surface);"
+          data-broken-index={i}
+        >
+          <!-- Rotating glow border (same as service cards) -->
+          <div class="service-glow" aria-hidden="true"><div class="glow-ring"></div></div>
+
+          <!-- Amber solution border (draws in via GSAP) -->
+          <div class="broken-card__border" aria-hidden="true"></div>
+
+          <!-- Title -->
           <h3 class="font-serif font-normal text-primary-text text-[22px] leading-tight mb-5">
             {card.title}
           </h3>
-          <p class="font-sans text-[16px] text-secondary-text leading-relaxed mb-4">
+
+          <!-- Problem (slate) -->
+          <p class="broken-card__problem font-sans text-[16px] text-slate leading-relaxed mb-4">
             {card.before}
           </p>
-          <p class="font-sans text-[16px] text-primary-text leading-relaxed mb-5">
+
+          <!-- Solution (amber) -->
+          <p class="broken-card__solution font-sans text-[16px] text-forge-amber leading-relaxed mb-5" style="opacity:0;">
             {card.after}
           </p>
-          <p class="font-mono text-[13px] text-tertiary leading-relaxed italic">
+
+          <!-- Example -->
+          <p class="broken-card__example font-mono text-[13px] text-tertiary leading-relaxed italic" style="opacity:0;">
             {card.example}
           </p>
         </div>
